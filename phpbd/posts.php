@@ -1,26 +1,23 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    session_start();
+    if (isset($_SESSION["user_id"])) {
+        $user_id = $_SESSION["user_id"];
+        $bd = Database();
+        $ress = $bd->prepare("INSERT INTO posts (user_id, title, content) values (?,?,?)");
+        $ress->bind_param("iss", $user_id, $_POST['title'], $_POST['content']);
+        $ress->execute(); 
+    }
+    else {
+        echo 'Войдите в аккаунт';
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $login = $_POST['login'];
-    $password = $_POST['password'];
-
-    $bd = Database();
-
-    $ress = $bd->prepare("Select * from users where username = ? and password = ?");
-    $ress->bind_param("ss", $login, $password);
-    $ress->execute();
-    $result = $ress->get_result();
-    $res = $result->fetch_assoc();
 }
 
-
-
-function Database()
-{
+function Database() {
     $bd = new mysqli("151.248.115.10", "root", "Kwuy1mSu4Y", "DeryabichevAO-is64");
     return $bd;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,20 +32,11 @@ function Database()
 <body>
     <section class="hero">
         <div class="hero__info">
-            <h1 class="hero__title">Войдите в аккаунт!</h1>
+            <h1 class="hero__title">Оставьте заголовок</h1>
             <form class="hero__inputs" method="post">
-                <input type="text" class="hero__input" name="login" placeholder="Введите логин">
-                <input type="password" class="hero__input" name="password" placeholder="Введите Пароль">
+                <input type="text" class="hero__input" name="title" placeholder="Заголовок поста">
+                <textarea type="password" class="hero__textarea" name="content">Текст</textarea>
                 <input type="submit" class="hero__btn" name="button">
-                <?php
-                if (isset($res)) {
-                    echo "<p class='center'>Вы успешно вошли в аккаунт</p>";
-                    session_start();
-                    $_SESSION["user_id"] = $res["id"];
-                } else {
-                    echo "<p class='center'>У вас нет аккаунта, зарегистрируйтесь <a href='index.php'>Зарегистрироваться</a></p>";
-                }
-                ?>
             </form>
         </div>
     </section>
@@ -96,9 +84,13 @@ function Database()
         background-color: blue;
         color: white;
     }
-
-    .center {
+    .center{
         text-align: center;
     }
+    .hero__textarea{
+        width: 700px;
+        height: 200px;
+        padding: 20px;
+        border-radius: 20px;
+    }
 </style>
-

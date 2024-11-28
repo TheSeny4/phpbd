@@ -1,3 +1,25 @@
+<?php
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+   $login = $_POST['login'];
+   $email = $_POST['email'];
+   $password = $_POST['password'];
+   
+   $bd = Database();
+
+   $ress = $bd->prepare("INSERT INTO users (username, Email, password) VALUES (?,?,?)");
+   $ress->bind_param("sss", $login, $email, $password);
+   $ress->execute();
+}
+
+
+function Database()
+{
+    $bd = new mysqli("151.248.115.10", "root", "Kwuy1mSu4Y", "DeryabichevAO-is64");
+    return $bd;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,6 +41,12 @@
                 <input type="submit" class="hero__btn" name="button">
             </form>
         </div>
+    </section>
+    <section class="links">
+        <a href="/index.php" class="links__link">Зарегистрироваться</a>
+        <a href="/login.php" class="links__link">Войти</a>
+        <a href="/posts.php" class="links__link">Создать пост</a>
+        <a href="/allposts.php" class="links__link">Все посты</a>
     </section>
 </body>
 
@@ -59,26 +87,3 @@
         color: white;
     }
 </style>
-
-<?php
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   $login = $_POST['login'];
-   $email = $_POST['email'];
-   $password = $_POST['password'];
-   
-   $bd = Database();
-
-   $ress = $bd->prepare("INSERT INTO users (username, Email, password) VALUES (?,?,?)");
-   $ress->bind_param("sss", $login, $email, $password);
-   $ress->execute();
-}
-
-
-function Database()
-{
-    $bd = new mysqli("192.168.199.13", "learn", "learn", "learn_deryabichev364");
-    return $bd;
-}
-
-?>
